@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, Response
 from datetime import timedelta
 import io
+import os
 
 # === SRT Processing Functions ===
 
@@ -119,4 +120,4 @@ def process_srt():
 if __name__ == '__main__':
     # For development, run with debug=True. For production, use a proper WSGI server.
     # The default port is 5000.
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
