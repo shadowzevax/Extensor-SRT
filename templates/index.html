@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extensor de Subtítulos SRT</title>
+    <link rel="icon" href="{{ url_for('static', filename='Logoshadowrixius.png') }}" type="image/png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Luxurious and professional styles */
+        body {
+            background: linear-gradient(135deg, #000000, #333333); /* Black to dark gray gradient background */
+            color: #f8fafc; /* Light text */
+            font-family: 'Georgia', serif; /* Elegant serif font */
+            min-height: 100vh;
+            margin: 0;
+        }
+        .top-images {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .top-images img {
+            height: 150px; /* Taller for rectangular images */
+            width: auto;
+            max-width: 50%; /* Responsive width */
+            border-radius: 0.5rem;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(255, 255, 255, 0.2), 0 0 100px rgba(255, 255, 255, 0.1), 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .top-images img:hover {
+            transform: scale(1.05);
+        }
+        .arrow {
+            font-size: 4rem;
+            color: #f59e0b;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.8), 0 0 20px rgba(245, 158, 11, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        .arrow::before {
+            content: "→";
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(245, 158, 11, 0.8), 0 0 20px rgba(245, 158, 11, 0.5); }
+            to { text-shadow: 0 0 15px rgba(245, 158, 11, 1), 0 0 30px rgba(245, 158, 11, 0.7); }
+        }
+        @media (max-width: 768px) {
+            .arrow::before {
+                content: "↓";
+            }
+        }
+        .container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f1f5f9); /* Subtle white gradient */
+            border-radius: 1rem; /* More rounded */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.1); /* Deeper shadows */
+            border: 1px solid #e2e8f0;
+        }
+        .logo-inside {
+            display: block;
+            margin: 0 auto 2rem;
+            height: 80px;
+            width: auto;
+            max-width: 200px;
+        }
+        .input-field {
+            border: 2px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            background-color: #f8fafc;
+            color: #334155;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #f59e0b; /* Gold focus */
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706); /* Gold gradient */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569); /* Gray gradient */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(100, 116, 139, 0.5);
+        }
+        .file-input-label {
+            display: block;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #334155;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-bottom: 1.5rem;
+            border: 2px dashed #cbd5e1;
+        }
+        .file-input-label:hover {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            transform: translateY(-1px);
+        }
+        .file-input-label:active {
+            background: #cbd5e1;
+        }
+        .file-input-label span {
+            font-weight: 600;
+        }
+        .file-input-label:before {
+            content: '📁 '; /* Folder icon */
+            margin-right: 0.5rem;
+        }
+        #file-name {
+            font-style: italic;
+            color: #64748b;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .progress-container {
+            margin-top: 2rem;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #334155;
+            display: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #cbd5e1;
+        }
+        .progress-container.visible {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 30px;
+            background-color: #cbd5e1;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            border-radius: 1rem;
+            transition: width 0.8s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+        .progress-bar-fill.filled {
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.7);
+            animation: pulse 1s infinite;
+        }
+        .progress-bar-fill.error {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        h1 {
+            color: #1e293b;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            color: #475569;
+            font-size: 1.1rem;
+        }
+        label {
+            color: #334155;
+            font-weight: 600;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .top-images {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .top-images img {
+                max-width: 90%;
+                height: auto;
+            }
+            .container {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+            .card {
+                margin: 0 1rem;
+            }
+            .logo-inside {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <div class="top-images">
+        <img src="{{ url_for('static', filename='antes.png') }}" alt="Antes">
+        <span class="arrow"></span>
+        <img src="{{ url_for('static', filename='despues.png') }}" alt="Después">
+    </div>
+
+    <div class="container mx-auto px-4 py-12 max-w-2xl">
+        <div class="card p-8">
+            <img src="{{ url_for('static', filename='Logoshadowrixius.png') }}" alt="Logo" class="logo-inside">
+            <h1 class="text-3xl font-bold text-center mb-6">Extensor de Subtítulos SRT</h1>
+            <p class="text-center text-gray-600 mb-8">Sube tu archivo .srt y la herramienta ajustará los tiempos para eliminar espacios entre subtítulos.</p>
+
+            <form id="srt-form">
+                <div class="mb-4">
+                    <label for="srt_file" class="file-input-label">
+                        <span>Seleccionar archivo SRT</span>
+                        <input type="file" id="srt_file" name="srt_file" accept=".srt" class="hidden" required>
+                    </label>
+                    <p id="file-name" class="text-sm"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="output_filename" class="block text-sm font-medium text-gray-700 mb-1">Nombre del archivo de salida:</label>
+                    <input type="text" id="output_filename" name="output_filename" placeholder="ej. subtitulos_extendidos.srt" class="input-field">
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn-primary mr-2">
+                        Alargar Subtítulos
+                    </button>
+                    <button type="button" id="reset-button" class="btn-secondary hidden">
+                        Limpiar
+                    </button>
+                </div>
+            </form>
+
+            <!-- Progress Bar -->
+            <div id="progress-container" class="progress-container">
+                <div class="progress-bar-track">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+                <span id="progress-message">Procesando...</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('srt-form');
+        const fileInput = document.getElementById('srt_file');
+        const fileNameDisplay = document.getElementById('file-name');
+        const outputFilenameInput = document.getElementById('output_filename');
+        const resetButton = document.getElementById('reset-button');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressMessage = document.getElementById('progress-message');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileNameDisplay.textContent = `Archivo seleccionado: ${this.files[0].name}`;
+                // Suggest a default output filename
+                const originalName = this.files[0].name;
+                const baseName = originalName.substring(0, originalName.lastIndexOf('.'));
+                outputFilenameInput.value = `${baseName}_extendido.srt`;
+                resetButton.classList.remove('hidden');
+                // Hide progress bar if visible from previous operation
+                progressContainer.classList.remove('visible');
+                progressBarFill.classList.remove('filled', 'error'); // Reset fill classes
+                progressBarFill.style.width = '0%'; // Reset fill width
+            } else {
+                fileNameDisplay.textContent = '';
+                outputFilenameInput.value = '';
+                resetButton.classList.add('hidden');
+            }
+        });
+
+        resetButton.addEventListener('click', function() {
+            fileInput.value = ''; // Clear the file input
+            fileNameDisplay.textContent = '';
+            outputFilenameInput.value = '';
+            this.classList.add('hidden');
+            progressContainer.classList.remove('visible'); // Hide progress bar on reset
+            progressBarFill.classList.remove('filled', 'error'); // Reset fill classes
+            progressBarFill.style.width = '0%'; // Reset fill width
+        });
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Show progress bar and set message
+            progressContainer.classList.add('visible');
+            progressMessage.textContent = 'Procesando subtítulos...';
+            progressBarFill.classList.remove('filled', 'error'); // Ensure no old states are active
+            progressBarFill.style.width = '0%'; // Reset progress bar
+
+            const formData = new FormData();
+            formData.append('srt_file', fileInput.files[0]);
+            formData.append('output_filename', outputFilenameInput.value);
+
+            try {
+                const response = await fetch('/process-srt', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    progressMessage.textContent = `Error: ${errorText}`;
+                    progressBarFill.classList.add('error'); // Indicate error
+                    progressBarFill.style.width = '100%'; // Fill bar to show error state
+                    return;
+                }
+
+                // Get filename from Content-Disposition header
+                const disposition = response.headers.get('content-disposition');
+                let filename = 'processed_subtitles.srt'; // Default filename
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                // Trigger download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                // Update progress bar to full and show checkmark
+                progressBarFill.classList.add('filled'); // Indicate success
+                progressBarFill.style.width = '100%'; // Fill the bar
+                progressMessage.textContent = `¡Subtítulos procesados! Archivo "${filename}" descargado.`;
+
+                // Auto-scroll to the progress container
+                progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                progressMessage.textContent = 'Ocurrió un error al procesar los subtítulos. Por favor, intenta de nuevo.';
+                progressBarFill.classList.add('error'); // Indicate error
+                progressBarFill.style.width = '100%'; // Fill bar to show error state
+            }
+        });
+    </script>
+
+</body>
+</html>
