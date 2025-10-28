@@ -83,6 +83,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/test')
+def test():
+    return render_template('index02.html')
+
 @app.route('/process-srt', methods=['POST'])
 def process_srt():
     if 'srt_file' not in request.files:
